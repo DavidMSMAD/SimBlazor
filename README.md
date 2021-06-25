@@ -2,6 +2,7 @@
 ## Team
 * courtney 
 * Molly
+* John 
 
 ## Overview
 
