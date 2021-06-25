@@ -1,6 +1,7 @@
 # BapBlazor
 ## Team
 * courtney 
+* Molly
 
 ## Overview
 
