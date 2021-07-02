@@ -9,4 +9,7 @@ using Newtonsoft.Json;
         [JsonProperty("name")]
         public string Name { get; set; }
 
+        [JsonProperty("rating")]
+        public double Rating { get; set; }
+
     }
