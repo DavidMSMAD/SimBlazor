@@ -1,11 +1,23 @@
-@page "/pagination"
-
+@page "/toptenapps"
 @using System.Net.Http
 
 @inject HttpClient client
 
-@using Newtonsoft.Json;
+@using Newtonsoft.Json
 @using Data
+
+<h1>Top Ten Apps</h1>
+
+<p>This component demonstrates the top ten apps in the dataset.</p>
+
+<p>One way to tackle this problem;</p>
+<ul>
+    <li>Start with pretty much the same code as FetchStoreApps.razor.</li>
+    <li>Turn your table headers into hyperlinks.</li>
+    <li>When you click on the table header use a method to sort your list accordingly.</li>
+    <li>StoreApps is not a simple list, it is a list of objects.</li>
+    <li>You will need to search on, "sorting a list by object property"</li>
+</ul>
 
 <div class="container-fluid">
 
@@ -29,13 +41,12 @@
                         <tr class="justify-content-center">
                             <td>@storeapp.Id</td>
                             <td>@storeapp.Name</td>
+                            
                         </tr>
                     }
-
                 </tbody>
             </table>
         }
-
         @if (!StoreApps.Any())
         {
             <div class="justify-content-center">
@@ -44,11 +55,6 @@
         }
     </div>
 
-    <div>
-        <button type="button" @onclick="PrevCount">Prev</button>
-        <button type="button" @onclick="NextCount">Next</button>
-        <p>@error</p>
-    </div>
 </div>
 
 @code {
@@ -56,25 +62,9 @@
     string responseBody = "";
     List<StoreApp> StoreApps = new List<StoreApp>();
 
-    //Intial API Response
     protected override async Task OnInitializedAsync()
     {
-        var apiName = "api/StoreApps/GetPage/0";
-        var httpResponse = await client.GetAsync(apiName);
-
-        if (httpResponse.IsSuccessStatusCode)
-        {
-            responseBody = await httpResponse.Content.ReadAsStringAsync();
-            StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
-            StateHasChanged();
-        }
-    }
-
-    //Gets the page for Nav
-    public async Task GetPageAsync(int start)
-    {
-        var apiName = "api/StoreApps/GetPage/";
-        apiName += currentCount.ToString();
+        var apiName = "api/StoreApps/FirstTen";
         var httpResponse = await client.GetAsync(apiName);
 
         if (httpResponse.IsSuccessStatusCode)
@@ -85,39 +75,4 @@
         }
 
     }
-
-    //Vars for nav funtions
-    private int currentCount = 0;
-    private string error = "";
-
-    //Move to next set of records
-    private void NextCount()
-    {
-        if (currentCount + 25 < int.MaxValue)
-        {
-            currentCount = currentCount + 25;
-            var responce = GetPageAsync(currentCount);
-        }
-        else
-        {
-            error = "The limit of the database";
-        }
-    }
-
-    //Move to previous set of records
-    private void PrevCount()
-    {
-        if (currentCount - 25 >= 0)
-        {
-            currentCount = currentCount - 25;
-            var responce = GetPageAsync(currentCount);
-        }
-        else
-        {
-            error = "Cant go below zero";
-        }
-    }
-
 }
-
-
