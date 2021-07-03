@@ -70,7 +70,7 @@
         }
     }
 
-    //Gets the page for Nav
+    //Gets the next page for Nav
     public async Task GetPageAsync(int start)
     {
         var apiName = "api/StoreApps/GetPage/";
@@ -83,10 +83,9 @@
             StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
             StateHasChanged();
         }
-
     }
 
-    //Vars for nav funtions
+    //Variables for nav funtions
     private int currentCount = 0;
     private string error = "";
 
