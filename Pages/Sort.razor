@@ -1,6 +1,6 @@
 @page "/sort"
 @using System.Net.Http
-
+using System.Linq;
 @inject HttpClient client
 
 @using Newtonsoft.Json
@@ -10,81 +10,130 @@
 
 <p>This component demonstrates sorting the dataset.</p>
 
-<p>One way to tackle this problem;</p>
-<ul>
-    <li>Start with pretty much the same code as FetchStoreApps.razor.</li>
-    <li>Turn your table headers into hyperlinks.</li>
-    <li>When you click on the table header use a method to sort your list accordingly.</li>
-    <li>StoreApps is not a simple list, it is a list of objects.</li>
-    <li>You will need to search on, "sorting a list by object property"</li>
-</ul>
+<p>Please select the way you want the data to be ordered.</p>  
 
-<div class="container-fluid">
+    <div class="container-fluid">
 
-    <div class="row justify-content-center" style="margin-bottom:50px">
-        <h3 class="text-center">Store Apps - First Ten Records</h3>
-    </div>
+        <div class="row justify-content-center" style="margin-bottom:50px">
+            <h3 class="text-center">Store Apps - First Ten Records</h3>
+        </div>
 
-   <div class="row" style="margin:25px;">
-        @if (StoreApps != null)
-        {
-            <table class="table table-hover table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th><a href="javascript://" @onclick="@sortId">Id</a></th>
-                        <th><a href="javascript://" @onclick="@sortName">Name</a></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var storeapp in StoreApps)
-                    {
-                        <tr class="justify-content-center">
-                            <td>@storeapp.Id</td>
-                            <td>@storeapp.Name</td>
+        <div class="row" style="margin:25px;">
+            @if (StoreApps != null)
+            {
+                <table class="table table-hover table-bordered table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>
+                                Id
+                                <button @onclick="@OrderIdASC" value="id">ASC </button>
+                                <button @onclick="@OrderIdDSC" value="id">DSC </button>
+                            </th>
+
+                            <th>
+                                Name
+                                <button @onclick="@OrderNameASC" value="name">ASC </button>
+                                <button @onclick="@OrderNameDSC" value="name">DSC </button>
+                            </th>
+
+
+
                         </tr>
-                    }
-                </tbody>
-            </table>
-        }
-        @if (!StoreApps.Any())
-        {
-            <div class="justify-content-center">
-                <h5>No records to show</h5>
-            </div>
-        }
+                    </thead>
+                    <tbody>
+                        @foreach (var storeapp in StoreApps)
+                        {
+                            <tr class="justify-content-center">
+                                <td>@storeapp.Id</td>
+                                <td>@storeapp.Name</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            @if (!StoreApps.Any())
+            {
+                <div class="justify-content-center">
+                    <h5>No records to show</h5>
+                </div>
+            }
+        </div>
+
     </div>
 
-</div>
+    @code {
 
-@code {
+        string responseBody = "";
+        List<StoreApp> StoreApps = new List<StoreApp>();
 
-    string responseBody = "";
-    List<StoreApp> StoreApps = new List<StoreApp>();
-
-    protected override async Task OnInitializedAsync()
-    {
-        var apiName = "api/StoreApps/FirstTen";
-        var httpResponse = await client.GetAsync(apiName);
-
-        if (httpResponse.IsSuccessStatusCode)
+        protected override async Task OnInitializedAsync()
         {
-            responseBody = await httpResponse.Content.ReadAsStringAsync();
-            StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
-            StateHasChanged();
+            var apiName = "api/StoreApps";
+            var httpResponse = await client.GetAsync(apiName);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                responseBody = await httpResponse.Content.ReadAsStringAsync();
+                StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
+                StateHasChanged();
+            }
+
+        }
+        public string column = "";
+        public string order = "";
+
+
+        public async Task GetSortAsyncASC(string order)
+        {
+            var apiName = "api/StoreApps/Sort/asc?column=";
+            apiName += order;
+            var httpResponse = await client.GetAsync(apiName);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                responseBody = await httpResponse.Content.ReadAsStringAsync();
+                StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
+                StateHasChanged();
+            }
+
         }
 
-    }
-
-    private void sortId()
-    {
-        StoreApps.OrderByDescending(x => x.Id).ToList();
-            //need more here
-    }
 
 
-    private void sortName()
-    {
-        StoreApps.OrderByDescending(x => x.Name).ToList();
-            //need more here
+        public async Task GetSortAsyncDSC(string order)
+        {
+            var apiName = "api/StoreApps/Sort/dsc?coulmn=";
+            apiName += order;
+            var httpResponse = await client.GetAsync(apiName);
+
+            if (httpResponse.IsSuccessStatusCode)
+            {
+                responseBody = await httpResponse.Content.ReadAsStringAsync();
+                StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
+                StateHasChanged();
+            }
+
+        }
+
+        public void OrderIdASC()
+        {
+            StoreApps.Sort((x, y) => x.Id.CompareTo(y.Id));
+        }
+
+        public void OrderIdDSC()
+        {
+            StoreApps.Sort((x, y) => y.Id.CompareTo(x.Id));
+        }
+
+        public void OrderNameASC()
+        {
+            StoreApps.Sort((x, y) => x.Id.CompareTo(y.Id));
+        }
+
+        public void OrderNameDSC()
+        {
+            StoreApps.Sort((x, y) => y.Id.CompareTo(x.Id));
+        }
+
+
     }
-}
