@@ -63,6 +63,7 @@ else
             responseBody = await httpResponse.Content.ReadAsStringAsync();
             StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
             StateHasChanged();
+            await GetSize();
         }
 
     }
@@ -77,7 +78,7 @@ else
             responseBody = await httpResponse.Content.ReadAsStringAsync();
             CountVal = Int32.Parse(responseBody);
             StateHasChanged();
-            await GetSize();
+
         }
 
     }
