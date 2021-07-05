@@ -24,3 +24,21 @@ using Newtonsoft.Json;
         [JsonProperty("price")]
         public string Price { get; set; }
 }
+
+public class BarChartModel
+{
+    [JsonProperty("Value")]
+    public string Value { get; set; }
+
+    [JsonProperty("Count")]
+    public string Count { get; set; }
+}
+
+public class NameModel
+{
+    [JsonProperty("Name")]
+    public string Name { get; set; }
+}
+
+
+
