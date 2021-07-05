@@ -26,8 +26,6 @@
     <div class="form-group">
         <label for="name">Name</label>
         <InputText id="name" @bind-Value="addModel.Name" />
-      
-
     </div>
 
 
@@ -77,10 +75,8 @@ else
 @code {
     private AddModel addModel = new();
     string responseBody = "";
-
-
-
     List<StoreApp>StoreApps = new List<StoreApp>();
+
     private async Task AddApp()
     {
         Logger.LogInformation("StoreApp called");

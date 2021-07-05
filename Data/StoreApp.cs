@@ -40,5 +40,9 @@ public class NameModel
     public string Name { get; set; }
 }
 
-
+public class CountModel
+{
+    [JsonProperty("Count")]
+    public int Count { get; set; }
+}
 
