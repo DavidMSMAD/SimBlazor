@@ -6,14 +6,38 @@
 
 @using Newtonsoft.Json
 @using System.Data
-@using Blazor.Extensions.Canvas
-@using Blazor.Extensions;
-@using Blazor.Extensions.Canvas.Canvas2D;
 
-<div class="container-fluid">
+
+<head>
+    <style>
+        {
+            box-sizing: border-box
+        }
+
+        
+        .container {
+            width: 100%; /* Full width */
+            background-color: #ddd; /* Grey background */
+        }
+
+        .format {
+            text-align: right; /* Right-align text */
+            padding-top: 10px; /* Add top padding */
+            padding-bottom: 10px; /* Add bottom padding */
+            color: white; /* White text color */
+        }
+
+        .bar {
+            background-color: #28E5FF;
+        }
+        
+    </style>
+</head>
+
+<div>
 
     <div class="row justify-content-center" style="margin-bottom:50px">
-        <h3 class="text-center">Store Apps - First Ten Records</h3>
+        <h3 class="text-center">Bar Charts</h3>
     </div>
 
     <select @onchange=@GetBarChart>
@@ -24,55 +48,22 @@
         }
     </select>
 
-    <div class="row" style="margin:25px;">
+    <div class="chart" style="margin:50px">
         @if (BarChartValues != null)
         {
-
-            <table class="table table-bordered table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>Value</th>
-                        <th>Count</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    @foreach (var value in BarChartValues)
-                    {
-                        <tr class="justify-content-center">
-                            <td>@value.Value</td>
-                            <td>@value.Count</td>
-                        </tr>
-                    }
-                </tbody>
-            </table>
+            <h3>@getChart</h3>
+            <div class="form-control">
+                @foreach (var value in BarChartValues)
+                {
+                    <div>
+                        <div class="container">
+                            <h4>@value.Value</h4><div class="format bar" style="width:calc(@value.Count*5px);">@value.Count</div>
+                        </div>
+                    </div>
+                }
+            </div>
         }
     </div>
-    <div class= "col 8">
-        <div class= "mb-4">
-            <div class="row">
-                <h2 class="nb-0">@getChart</h2>
-                <select class="form-control">
-                    @foreach(var value in BarChartValues)
-                    {
-
-                    }
-                </select>
-            </div>
-
-        </div>
-    </div>
-    <div>
-        <select class="form-control">
-            @foreach (var value in BarChartValues)
-            {
-                <div>
-
-                </div>
-            }
-        </select>
-    </div>
-
-
 
     @if (!BarChartValues.Any())
     {
@@ -81,7 +72,6 @@
         </div>
     }
     
-    <canvas id="myCanvas" width="400" height="400" style="border:1px solid grey"></canvas>
 
 </div>
 
@@ -129,6 +119,6 @@
         }
     }
 
-
+    
 
 }
