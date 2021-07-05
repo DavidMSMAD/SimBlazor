@@ -44,21 +44,35 @@
     }
 
     @code {
+        //Using FetchStoreApps to return First Ten
+        string responseBody = "";
+        List<StoreApp> StoreApps = new List<StoreApp>();
 
-            string responseBody = "";
-            List<StoreApp> StoreApps = new List<StoreApp>();
+        protected override async Task OnInitializedAsync()
+        {
+            var apiName = "api/StoreApps/FirstTen";
+            var httpResponse = await client.GetAsync(apiName);
 
-            protected async Task deleteRecordAsync(StoreApp storeapp)
+            if (httpResponse.IsSuccessStatusCode)
             {
-             
+                responseBody = await httpResponse.Content.ReadAsStringAsync();
+                StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
+                StateHasChanged();
+            }
+        }
+
+        //Calling API 
+        protected async Task deleteRecordAsync(StoreApp storeapp)
+        {
+
 
             var apiName = "api/StoreApps/" + storeapp.Id.ToString();
             var httpResponse = await client.DeleteAsync(apiName);
 
-            
-                responseBody = await httpResponse.Content.ReadAsStringAsync();
-            
-                StateHasChanged();
+
+            responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+            StateHasChanged();
         }
 
     }
