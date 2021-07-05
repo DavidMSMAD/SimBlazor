@@ -11,7 +11,7 @@ public class AddModel
 {
     [Required]
     [StringLength(255, MinimumLength = 3, ErrorMessage = "Name should be between {2} and {1} characters long.")]
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public double Rating { get; set; }
     public int People { get; set; }

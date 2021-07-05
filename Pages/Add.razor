@@ -15,7 +15,7 @@
 <p>This component demonstrates adding a record to the datasaset.</p>
 
 
-<p>Please enter a record to the datasaset and select submit</p>
+<p>Please enter a record to the datasaset and select add record</p>
 
 
 <EditForm Model="@addModel" OnValidSubmit="@AddApp">
@@ -24,79 +24,62 @@
 
 
     <div class="form-group">
+
+        <label for="id">Id</label>
+        <InputText id="id" @bind-Value="addModel.Id" />
+        <br />
         <label for="name">Name</label>
         <InputText id="name" @bind-Value="addModel.Name" />
-      
+        <br />
+        <label for="rating">Rating</label>
+        <InputNumber id="rating" @bind-Value="addModel.Rating" />
+        <br />
+        <label for="people">People</label>
+        <InputNumber id="people" @bind-Value="addModel.People" />
+        <br />
+        <label for="category">Category</label>
+        <InputText id="category" @bind-Value="addModel.Category" />
+        <br />
+        <label for="date">Date</label>
+        <InputText id="date" @bind-Value="addModel.Date" />
 
     </div>
-
-
 
     <button type="submit">Add Record</button>
 </EditForm>
 
-
-
-
-<br />
-<p>One way to tackle this problem;</p>
-<ul>
-    {
-
-    <li>Add a form to the page e.g. inputs and a submit button.</li>
-    <li>Post the form to the API to add the new record to the API's database.</li>
-    <li>Add the response from the API to the empty StoreApps list.</li>
-    <li>Show the result form your updated list.</li>
-    <li><a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/forms-validation?view=aspnetcore-5.0">Blazor Forms</a></li>
-    <li><a href="https://docs.microsoft.com/en-us/previous-versions/aspnet/hh944682(v=vs.118)">PostAsJsonAsync Method</a></li>
-    <li><a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio">API Post</a></li>
-</ul>
-@if (StoreApps == null)
-{
-    <p><em>Loading...</em></p>
-}
-else
-{
-    
-        <tbody>
-            @foreach (var storeapp in StoreApps)
-            {
-                <tr class="justify-content-center">
-                    <td>@storeapp.Id</td>
-                    <td>@storeapp.People</td>
-                    
-                </tr>
-            }
-        </tbody>
-    
-}
-
-
-
-
 @code {
     private AddModel addModel = new();
     string responseBody = "";
-
-
 
     List<StoreApp>StoreApps = new List<StoreApp>();
     private async Task AddApp()
     {
         Logger.LogInformation("StoreApp called");
 
-
-
-        // Process the valid form
+        // Create the object 
         var apiName = "api/StoreApps";
-        var addApp = new AddModel { Name = addModel.Name };
+        var addApp = new AddModel
+
+        {
+            Id = addModel.Id,
+            Name = addModel.Name,
+            Rating = addModel.Rating,
+            People = addModel.People,
+            Category = addModel.Category,
+            Date = addModel.Date,
+            Price = addModel.Price
+
+        };
+
         var httpResponse = await client.PostAsJsonAsync(apiName, addApp);
         if (httpResponse.IsSuccessStatusCode)
         {
             responseBody = await httpResponse.Content.ReadAsStringAsync();
-            StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
+            StoreApps.Add(JsonConvert.DeserializeObject<StoreApp>(responseBody));
             StateHasChanged();
         }
+
     }
 }
 
