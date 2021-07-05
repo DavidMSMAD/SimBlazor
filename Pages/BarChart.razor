@@ -19,17 +19,14 @@
             <table class="table table-bordered table-striped">
                 <thead class="thead-dark">
                     <tr>
-                        <th>Id</th>
-                        <th>Name</th>
+                        
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (var storeapp in StoreApps)
                     {
-                        <tr class="justify-content-center">
-                            <td>@storeapp.Id</td>
-                            <td>@storeapp.Name</td>
-                        </tr>
+                        <li>@storeapp.Rating</li>
+                        //<input placeholder="Something todo" @bind="AddRecord" />
                     }
                 </tbody>
             </table>
@@ -46,12 +43,13 @@
 
 @code {
 
-    string responseBody = "";
-    List<StoreApp> StoreApps = new List<StoreApp>();
+        string responseBody = "";
+        List<StoreApp> StoreApps = new List<StoreApp>();
 
     protected override async Task OnInitializedAsync()
     {
-        var apiName = "api/StoreApps/FirstTen";
+        var apiName = "api/StoreApps/Rating/";
+        apiName += value;
         var httpResponse = await client.GetAsync(apiName);
 
         if (httpResponse.IsSuccessStatusCode)
@@ -60,6 +58,12 @@
             StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
             StateHasChanged();
         }
+
+    }
+
+    string value = "";
+    static void AddRecord()
+    {
 
     }
 }
