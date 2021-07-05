@@ -36,6 +36,29 @@ using System.Linq;
                                 <button @onclick="@OrderNameDSC" value="name">DSC </button>
                             </th>
 
+                            <th>
+                                Rating
+                                <button @onclick="@OrderRatingASC" value="rating">ASC </button>
+                                <button @onclick="@OrderRatingDSC" value="rating">DSC </button>
+                            </th>
+
+                            <th>
+                                Price
+                                <button @onclick="@OrderPriceASC" value="price">ASC </button>
+                                <button @onclick="@OrderPriceDSC" value="price">DSC </button>
+                            </th>
+
+                            <th>
+                                People
+                                <button @onclick="@OrderPeopleASC" value="people">ASC </button>
+                                <button @onclick="@OrderPeopleDSC" value="people">DSC </button>
+                            </th>
+
+                            <th>
+                                Category
+                                <button @onclick="@OrderCategoryASC" value="category">ASC </button>
+                                <button @onclick="@OrderCategoryDSC" value="category">DSC </button>
+                            </th>
 
 
                         </tr>
@@ -135,5 +158,44 @@ using System.Linq;
             StoreApps.Sort((x, y) => y.Id.CompareTo(x.Id));
         }
 
+        public void OrderRatingASC()
+        {
+            StoreApps.Sort((x, y) => x.Id.CompareTo(y.Id));
+        }
+
+        public void OrderRatingDSC()
+        {
+            StoreApps.Sort((x, y) => y.Id.CompareTo(x.Id));
+        }
+
+        public void OrderPriceASC()
+        {
+            StoreApps.Sort((x, y) => x.Id.CompareTo(y.Id));
+        }
+
+        public void OrderPriceDSC()
+        {
+            StoreApps.Sort((x, y) => y.Id.CompareTo(x.Id));
+        }
+
+        public void OrderPeopleASC()
+        {
+            StoreApps.Sort((x, y) => x.Id.CompareTo(y.Id));
+        }
+
+        public void OrderPeopleDSC()
+        {
+            StoreApps.Sort((x, y) => y.Id.CompareTo(x.Id));
+        }
+
+        public void OrderCategoryASC()
+        {
+            StoreApps.Sort((x, y) => x.Id.CompareTo(y.Id));
+        }
+
+        public void OrderCategoryDSC()
+        {
+            StoreApps.Sort((x, y) => y.Id.CompareTo(x.Id));
+        }
 
     }
