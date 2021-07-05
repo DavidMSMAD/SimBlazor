@@ -13,68 +13,137 @@
 <h1>Delete a Record</h1>
 
 
-    @if (StoreApps == null)
-    {
-        <p><em>Loading...</em></p>
-    }
-    else
-    {
-        <table class="table table-bordered table-striped">
-            <thead class="thead-dark">
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th>Action</th>
-                </tr>
-            </thead>
-            <tbody>
+@if (StoreApps == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
 
-                @foreach (var storeapp in StoreApps)
-                {
-                    <tr class="justify-content-center">
-                        <td>@storeapp.Id</td>
-                        <td>@storeapp.Name</td>
-                        <td>
-                            <a href="javascript://" @onclick='()=>deleteRecordAsync(storeapp)'>Delete </a>
-                        </td>
-                    </tr>
-                }
-            </tbody>
-        </table>
-    }
-
-    @code {
-        //Using FetchStoreApps to return First Ten
-        string responseBody = "";
-        List<StoreApp> StoreApps = new List<StoreApp>();
-
-        protected override async Task OnInitializedAsync()
-        {
-            var apiName = "api/StoreApps/FirstTen";
-            var httpResponse = await client.GetAsync(apiName);
-
-            if (httpResponse.IsSuccessStatusCode)
+            @foreach (var storeapp in StoreApps)
             {
-                responseBody = await httpResponse.Content.ReadAsStringAsync();
-                StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
-                StateHasChanged();
+                <tr class="justify-content-center">
+                    <td>@storeapp.Id</td>
+                    <td>@storeapp.Name</td>
+                    <td>
+                        <a href="javascript://" @onclick='()=>deleteRecordAsync(storeapp)'>Delete </a>
+                    </td>
+                </tr>
             }
-        }
+        </tbody>
+    </table>
+    <button type="button" @onclick="PrevCount">Prev</button>
+    <button type="button" @onclick="NextCount">Next</button>
+    <p>@error</p>
+}
 
-        //Calling API 
-        protected async Task deleteRecordAsync(StoreApp storeapp)
+@code {
+    //Using FetchStoreApps to return First Ten
+    string responseBody = "";
+
+    List<StoreApp> StoreApps = new List<StoreApp>();
+    int CountVal;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var apiName = "api/StoreApps/GetPage/0";
+        var httpResponse = await client.GetAsync(apiName);
+
+        if (httpResponse.IsSuccessStatusCode)
         {
-
-
-            var apiName = "api/StoreApps/" + storeapp.Id.ToString();
-            var httpResponse = await client.DeleteAsync(apiName);
-
-
             responseBody = await httpResponse.Content.ReadAsStringAsync();
-
+            StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
             StateHasChanged();
         }
 
     }
 
-    
+    public async Task GetSize()
+    {
+        var dataSizeAPI = "api/StoreApps/DataSize";
+        var httpResponse = await client.GetAsync(dataSizeAPI);
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            responseBody = await httpResponse.Content.ReadAsStringAsync();
+            CountVal = Int32.Parse(responseBody);
+            StateHasChanged();
+            await GetSize();
+        }
+
+    }
+
+    public async Task GetPageAsync(int start)
+    {
+        var apiName = "api/StoreApps/GetPage/";
+        apiName += currentCount.ToString();
+        var httpResponse = await client.GetAsync(apiName);
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            responseBody = await httpResponse.Content.ReadAsStringAsync();
+            StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
+            StateHasChanged();
+        }
+    }
+
+    //Calling API
+    protected async Task deleteRecordAsync(StoreApp storeapp)
+    {
+
+        var apiName = "api/StoreApps/" + storeapp.Id.ToString();
+        var httpResponse = await client.DeleteAsync(apiName);
+
+
+        responseBody = await httpResponse.Content.ReadAsStringAsync();
+
+        StateHasChanged();
+    }
+
+    //Variables for nav funtions
+    private int currentCount = 0;
+    private string error = "";
+    //public List<CountModel> c = CountVal[0];
+
+    private void NextCount()
+    {
+
+        if (currentCount + 25 < CountVal)
+        {
+            currentCount = currentCount + 25;
+            var responce = GetPageAsync(currentCount);
+            error = "";
+        }
+        else
+        {
+            error = "The limit of the database";
+        }
+    }
+
+    //Move to previous set of records
+    private void PrevCount()
+    {
+        if (currentCount - 25 >= 0)
+        {
+            currentCount = currentCount - 25;
+            var responce = GetPageAsync(currentCount);
+            error = "";
+        }
+        else
+        {
+            error = "Cant go below zero";
+        }
+    }
+
+}
+
+
