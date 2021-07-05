@@ -44,7 +44,7 @@
     }
 
     @code {
-
+        //Using FetchStoreApps to return First Ten
         string responseBody = "";
         List<StoreApp> StoreApps = new List<StoreApp>();
 
@@ -59,8 +59,9 @@
                 StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
                 StateHasChanged();
             }
-
         }
+
+        //Calling API 
         protected async Task deleteRecordAsync(StoreApp storeapp)
         {
 
