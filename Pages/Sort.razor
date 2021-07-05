@@ -66,10 +66,14 @@ using System.Linq;
                     <tbody>
                         @foreach (var storeapp in StoreApps)
                         {
-                            <tr class="justify-content-center">
-                                <td>@storeapp.Id</td>
-                                <td>@storeapp.Name</td>
-                            </tr>
+                        <tr class="justify-content-center">
+                            <td>@storeapp.Id</td>
+                            <td>@storeapp.Name</td>
+                            <td>@storeapp.Rating</td>
+                            <td>@storeapp.Price</td>
+                            <td>@storeapp.People</td>
+                            <td>@storeapp.Category</td>
+                        </tr>
                         }
                     </tbody>
                 </table>
