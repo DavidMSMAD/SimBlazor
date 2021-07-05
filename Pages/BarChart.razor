@@ -5,7 +5,10 @@
 @inject HttpClient client
 
 @using Newtonsoft.Json
-@using Data
+@using System.Data
+@using Blazor.Extensions.Canvas
+@using Blazor.Extensions;
+@using Blazor.Extensions.Canvas.Canvas2D;
 
 <div class="container-fluid">
 
@@ -13,57 +16,119 @@
         <h3 class="text-center">Store Apps - First Ten Records</h3>
     </div>
 
-    <div class="row" style="margin:25px;">
-        @if (StoreApps != null)
+    <select @onchange=@GetBarChart>
+        <option selected disabled="true">-- Select Category --</option>
+        @foreach (var item in listCategory)
         {
+            <option value="@item.Name">@item.Name</option>
+        }
+    </select>
+
+    <div class="row" style="margin:25px;">
+        @if (BarChartValues != null)
+        {
+
             <table class="table table-bordered table-striped">
                 <thead class="thead-dark">
                     <tr>
-                        
+                        <th>Value</th>
+                        <th>Count</th>
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var storeapp in StoreApps)
+                    @foreach (var value in BarChartValues)
                     {
-                        <li>@storeapp.Rating</li>
-                        //<input placeholder="Something todo" @bind="AddRecord" />
+                        <tr class="justify-content-center">
+                            <td>@value.Value</td>
+                            <td>@value.Count</td>
+                        </tr>
                     }
                 </tbody>
             </table>
         }
-        @if (!StoreApps.Any())
-        {
-            <div class="justify-content-center">
-                <h5>No records to show</h5>
-            </div>
-        }
     </div>
+    <div class= "col 8">
+        <div class= "mb-4">
+            <div class="row">
+                <h2 class="nb-0">@getChart</h2>
+                <select class="form-control">
+                    @foreach(var value in BarChartValues)
+                    {
+
+                    }
+                </select>
+            </div>
+
+        </div>
+    </div>
+    <div>
+        <select class="form-control">
+            @foreach (var value in BarChartValues)
+            {
+                <div>
+
+                </div>
+            }
+        </select>
+    </div>
+
+
+
+    @if (!BarChartValues.Any())
+    {
+        <div class="justify-content-center">
+            <h5>No records to show</h5>
+        </div>
+    }
+    
+    <canvas id="myCanvas" width="400" height="400" style="border:1px solid grey"></canvas>
 
 </div>
 
+
 @code {
 
-        string responseBody = "";
-        List<StoreApp> StoreApps = new List<StoreApp>();
+    string responseBody = "";
+    List<BarChartModel> BarChartValues = new List<BarChartModel>();
+    List<NameModel> listCategory = new List<NameModel>();
 
-    protected override async Task OnInitializedAsync()
+    public async Task GetBarChartAsync(string category)
     {
-        var apiName = "api/StoreApps/Rating/";
-        apiName += value;
+        var apiName = "api/StoreApps/BarChart?category=";
+        apiName += category;
         var httpResponse = await client.GetAsync(apiName);
 
         if (httpResponse.IsSuccessStatusCode)
         {
             responseBody = await httpResponse.Content.ReadAsStringAsync();
-            StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
+            BarChartValues = JsonConvert.DeserializeObject<List<BarChartModel>>(responseBody);
             StateHasChanged();
         }
 
     }
 
-    string value = "";
-    static void AddRecord()
+    public string getChart = "";
+
+    async void GetBarChart(ChangeEventArgs change)
     {
+        getChart = change.Value.ToString();
+        await GetBarChartAsync(getChart);
 
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        var apiName = "api/StoreApps/CategoryNames";
+        var httpResponse = await client.GetAsync(apiName);
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            responseBody = await httpResponse.Content.ReadAsStringAsync();
+            listCategory = JsonConvert.DeserializeObject<List<NameModel>>(responseBody);
+            StateHasChanged();
+        }
+    }
+
+
+
 }
