@@ -47,7 +47,7 @@ else
 }
 
 @code {
-    //Using FetchStoreApps to return First Ten
+    //Return Values 
     string responseBody = "";
 
     List<StoreApp> StoreApps = new List<StoreApp>();
@@ -63,7 +63,6 @@ else
             responseBody = await httpResponse.Content.ReadAsStringAsync();
             StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
             StateHasChanged();
-            await GetSize();
         }
 
     }
@@ -113,13 +112,14 @@ else
     //Variables for nav funtions
     private int currentCount = 0;
     private string error = "";
-    //public List<CountModel> c = CountVal[0];
 
-    private void NextCount()
+
+    private async void NextCount()
     {
-
+        await GetSize();
         if (currentCount + 25 < CountVal)
         {
+
             currentCount = currentCount + 25;
             var responce = GetPageAsync(currentCount);
             error = "";

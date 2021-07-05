@@ -52,11 +52,14 @@
 </div>
 
 @code {
-
+    //Returns Values
     string responseBody = "";
     List<StoreApp> StoreApps = new List<StoreApp>();
 
-    //Intial API Response
+    //For data size check
+    int CountVal;
+
+    //Inital API Response
     protected override async Task OnInitializedAsync()
     {
         var apiName = "api/StoreApps/GetPage/0";
@@ -85,14 +88,29 @@
         }
     }
 
+    public async Task GetSize()
+    {
+        var dataSizeAPI = "api/StoreApps/DataSize";
+        var httpResponse = await client.GetAsync(dataSizeAPI);
+
+        if (httpResponse.IsSuccessStatusCode)
+        {
+            responseBody = await httpResponse.Content.ReadAsStringAsync();
+            CountVal = Int32.Parse(responseBody);
+            StateHasChanged();
+
+        }
+
+    }
     //Variables for nav funtions
     private int currentCount = 0;
     private string error = "";
 
     //Move to next set of records
-    private void NextCount()
+    private async void NextCount()
     {
-        if (currentCount + 25 < int.MaxValue)
+        await GetSize();
+        if (currentCount + 25 < CountVal)
         {
             currentCount = currentCount + 25;
             var responce = GetPageAsync(currentCount);
