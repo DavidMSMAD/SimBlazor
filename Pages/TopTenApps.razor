@@ -8,7 +8,7 @@
 
 <h1>Top Ten Apps</h1>
 
-<p>This component demonstrates the top ten apps in the dataset.</p>
+<p>This component demonstrates the top ten apps in the dataset by rating and number of people that rated it.</p>
 
 <div class="container-fluid">
 
@@ -26,6 +26,7 @@
                         <th>Name</th>
                         <th>Rating</th>
                         <th>People</th>
+                        <th>Category</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -35,6 +36,8 @@
                             <td>@storeapp.Id</td>
                             <td>@storeapp.Name</td>
                             <td>@storeapp.Rating</td>
+                            <td>@storeapp.People</td>
+                            <td>@storeapp.Category</td>
                             
                             
                         </tr>

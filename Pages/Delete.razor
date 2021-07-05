@@ -9,17 +9,58 @@
 @using Microsoft.Extensions.Logging
 @inject ILogger<Search> Logger
 
-<h1>Delete</h1>
 
-<p>This component demonstrates deleting from the dataaset.</p>
+<h1>Delete a Record</h1>
 
-<p>One way to tackle this problem;</p>
-<ul>
-    <li>Start with pretty much the same code as FetchStoreApps.razor.</li>
-    <li>Add a new column to the data table with a Delete link.</li>
-    <li>Send a DELETE request to the API to delete the record from API's database.</li>
-    <li>The API will need to know the Id of the record you want to delete (onclick="()=>deleteRecord(storeapp)").</li>
-    <li><a href="https://docs.microsoft.com/en-us/aspnet/core/blazor/call-web-api?view=aspnetcore-5.0&pivots=webassembly">Call a web API from Blazor</a></li>
-    <li><a href="https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpclient.deleteasync?view=net-5.0">DeleteAsync Method</a></li>
-    <li><a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio">API Delete</a></li>
-</ul>
+
+    @if (StoreApps == null)
+    {
+        <p><em>Loading...</em></p>
+    }
+    else
+    {
+        <table class="table table-bordered table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>Id</th>
+                    <th>Name</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                @foreach (var storeapp in StoreApps)
+                {
+                    <tr class="justify-content-center">
+                        <td>@storeapp.Id</td>
+                        <td>@storeapp.Name</td>
+                        <td>
+                            <a href="javascript://" @onclick='()=>deleteRecordAsync(storeapp)'>Delete </a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+
+    @code {
+
+            string responseBody = "";
+            List<StoreApp> StoreApps = new List<StoreApp>();
+
+            protected async Task deleteRecordAsync(StoreApp storeapp)
+            {
+             
+
+            var apiName = "api/StoreApps/" + storeapp.Id.ToString();
+            var httpResponse = await client.DeleteAsync(apiName);
+
+            
+                responseBody = await httpResponse.Content.ReadAsStringAsync();
+            
+                StateHasChanged();
+        }
+
+    }
+
+    
