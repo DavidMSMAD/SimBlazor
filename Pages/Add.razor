@@ -7,6 +7,7 @@
 @using Data
 
 @using Microsoft.Extensions.Logging
+@inject ILogger<Search> Logger
 
 
 <h1>Add Record</h1>
@@ -16,31 +17,27 @@
 
 <p>Please enter a r44ecord to the datasaset and select submit</p>
 
-<EditForm class="form-inline my-2" Model="@addModel" OnValidSubmit="AddApp">
+
+<EditForm Model="@addModel" OnValidSubmit="@AddApp">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
 
-    <label for="AddName">Enter a name</label><br>
-    <input type="text" id="name" name="name"><br>
-    <br />
-    <label for="AddRating">Enter a Rating</label><br>
-    <input type="number" id="rating" name="rating" min="1" max="5">
-    <br />
-    <label for="AddPeople">Enter number of People</label><br>
-    <input type="text" id="people" name="people"><br>
-    <br />
-    <label for="AddCategory">Enter a Category</label><br>
-    <input type="text" id="category" name="category"><br>
-    <br />
-    <label for="AddDate">Enter a Date</label><br>
-    <input type="date" id="date" name="date"><br>
-    <br />
-    <label for="AddPrice">Enter a Price</label><br>
-    <input type="text" id="price" name="price"><br>
-    <br />
-    <button class="btn btn-outline-primary" type="button">Submit</button>
+    <div class="form-group">
+        <label for="name">Name</label>
+        <InputText id="name" @bind-Value="addModel.Name" />
+      
+
+    </div>
+
+
+
+    <button type="submit">Add Record</button>
 </EditForm>
+
+
+
+
 <br />
 <p>One way to tackle this problem;</p>
 <ul>
@@ -54,32 +51,52 @@
     <li><a href="https://docs.microsoft.com/en-us/previous-versions/aspnet/hh944682(v=vs.118)">PostAsJsonAsync Method</a></li>
     <li><a href="https://docs.microsoft.com/en-us/aspnet/core/tutorials/first-web-api?view=aspnetcore-5.0&tabs=visual-studio">API Post</a></li>
 </ul>
+@if (StoreApps == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    
+        <tbody>
+            @foreach (var storeapp in StoreApps)
+            {
+                <tr class="justify-content-center">
+                    <td>@storeapp.Id</td>
+                    <td>@storeapp.People</td>
+                    
+                </tr>
+            }
+        </tbody>
+    
+}
+
+
+
 
 @code {
     private AddModel addModel = new();
-
-    private void AddApp()
-    {
-
-    }
     string responseBody = "";
-    List<StoreApp> StoreApps = new List<StoreApp>();
 
-    //Calling the API
-    public async Task AddApp(AddModel addModel)
+
+
+    List<StoreApp>StoreApps = new List<StoreApp>();
+    private async Task AddApp()
     {
-        var apiName = "api/StoreApps";
+        Logger.LogInformation("StoreApp called");
 
+
+
+        // Process the valid form
+        var apiName = "api/StoreApps";
         var addApp = new AddModel { Name = addModel.Name };
         var httpResponse = await client.PostAsJsonAsync(apiName, addApp);
-
         if (httpResponse.IsSuccessStatusCode)
         {
             responseBody = await httpResponse.Content.ReadAsStringAsync();
             StoreApps = JsonConvert.DeserializeObject<List<StoreApp>>(responseBody);
             StateHasChanged();
         }
-
     }
 }
 
