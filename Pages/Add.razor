@@ -17,12 +17,11 @@
 
 <p>Please enter a record to the datasaset and select add record</p>
 
-
 <EditForm Model="@addModel" OnValidSubmit="@AddApp">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-
+    
     <div class="form-group">
 
         <label for="id">Id</label>
@@ -44,7 +43,7 @@
         <InputText id="date" @bind-Value="addModel.Date" />
 
     </div>
-
+   
     <button type="submit">Add Record</button>
 </EditForm>
 

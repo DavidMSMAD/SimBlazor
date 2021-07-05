@@ -2,11 +2,26 @@
 
 html, body {
     font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    background-color: #28E5FF;
 }
 
 a, .btn-link {
     color: #0366d6;
 }
+img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    width: 100%;
+}
+h2{
+    text-align:center;
+    color:white;
+    margin-top:30px;
+   
+
+}
+
 
 .btn-primary {
     color: #fff;
